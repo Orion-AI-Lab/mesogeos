@@ -6,7 +6,8 @@ import dask
 import pandas as pd
 from shapely.geometry import box
 import rasterio
-
+from affine import Affine
+from rasterio import features
 import calendar
 
 
@@ -34,7 +35,13 @@ class Cuber(object):
             'era5_max_sp': 'sp',
             'era5_max_ssrd': 'ssrd',
             'era5_max_tp': 'tp',
-            'sminx': 'smi'
+            'sminx': 'smi',
+            'burned_areas': 'burned_areas',
+            'ignition_points': 'ignition_points',
+            'dem': 'dem',
+            'dem_aspect': 'aspect',
+            'dem_slope_radians': 'slope',
+            'dem_curvature': 'curvature'
         }
 
     def init_from_datacube(self, reference_path, start_date, end_date):
@@ -43,13 +50,6 @@ class Cuber(object):
         y_ = dc_reference['y']
 
         timesteps = [np.datetime64(start_date + datetime.timedelta(days=x)) for x in range((end_date - start_date).days + 1)]
-
-        #         ref_datacube = xr.Dataset(data_vars = {'dummy': (['y', 'x'], np.zeros((len(y_), len(x_))))},
-        #                                     coords = {
-        #                                             'y': (['y'], y_),
-        #                                             'x': (['x'], x_)
-        #                                             }
-        #                                 ).rio.set_crs(4326)
 
         static_zeros = dask.array.zeros([len(y_), len(x_)], chunks={0: len(x_), 1: len(y_)}, dtype=np.float32)
         timesteps_zeros = dask.array.zeros([len(timesteps)] + [len(y_), len(x_)],
@@ -77,6 +77,39 @@ class Cuber(object):
     def append_to_datacube(self, var_name):
         pass
 
+    def write_static_var(self, product, filename, var_names):
+
+        if product == 'DEM':
+            ds = self._dem(filename)
+
+        data_vars = {
+            self.names[var_name]: (('y', 'x'), ds[var_name].values) for var_name in var_names
+        }
+
+        new_data = xr.Dataset(
+            data_vars=data_vars,
+            coords={
+                "x": ds.x,
+                "y": ds.y
+            },
+        ).chunk({'x': self.datacube.chunks['x'][0],
+                 'y': self.datacube.chunks['y'][0]})
+
+        if 'spatial_ref' in new_data.variables:
+            new_data = new_data.drop(["spatial_ref"])
+
+        if 'band' in new_data.variables:
+            new_data = new_data.drop(["band"])
+
+        new_data.to_zarr(self.ds_path,
+                         region={
+                             'y': slice(0, self.datacube.chunks['y'][0]),
+                             'x': slice(0, self.datacube.chunks['x'][0])
+                         }
+                         )
+        return
+
+
     def write_dynamic_var(self, product, files, var_names):
 
         if product in ['MOD11A1.061', 'MOD15A2H.061', 'MOD13A2.061']:
@@ -85,6 +118,8 @@ class Cuber(object):
             ds, temporal_resolution = self._era5(files)
         elif product == 'SMI':
             ds, temporal_resolution = self._smi(files)
+        elif product in ['BURNED_AREAS', 'IGNITION_POINTS']:
+            ds, temporal_resolution = self._burned_areas(files, var_names)
 
         for i in range(temporal_resolution):
 
@@ -125,6 +160,43 @@ class Cuber(object):
                 pass
 
         return
+
+    def transform_from_latlon(self, lat, lon):
+        lat = np.asarray(lat)
+        lon = np.asarray(lon)
+        trans = Affine.translation(lon[0], lat[0])
+        scale = Affine.scale(lon[1] - lon[0], lat[1] - lat[0])
+        return trans * scale
+
+    def _dem(self, filename):
+        return xr.open_dataset(filename)
+
+    def _burned_areas(self, filenames, var):
+
+        tmp_res = 1
+
+        files, dt = filenames[0], filenames[1]
+
+        a = np.zeros(shape=(len(self.datacube['y']), len(self.datacube['x'])))
+
+        if files:
+            for g in files:
+                mask = rasterio.features.geometry_mask(
+                    [g],
+                    out_shape=(len(self.datacube['y']), len(self.datacube['x'])),
+                    transform=self.transform_from_latlon(self.datacube['y'], self.datacube['x']),
+                    all_touched=True,
+                    invert=True)
+                a += mask
+
+        a = a[np.newaxis, ...]
+
+        mask = xr.DataArray(a, coords={'time': [dt], 'y': self.datacube['y'].values, 'x': self.datacube['x'].values},
+                            dims=["time", "y", "x"])
+
+        mask = mask.rename(var[0]).to_dataset()
+
+        return mask, tmp_res
 
     def _smi(self, ds_smi):
 
@@ -197,6 +269,8 @@ class Cuber(object):
         ds = ds.astype('float32')
 
         for x in ds:
+            if product == 'MOD15A2H.061':
+                ds[x].attrs['_FillValue'] = [249.0, 250.0, 251.0, 252.0, 253.0, 254.0, 255.0]
             a = np.isin(ds[x].values, ds[x].attrs['_FillValue'])
             ds[x].values[a] = float('NaN')
             if product == 'MOD13A2.061':
@@ -264,9 +338,6 @@ class Cuber(object):
             ds[var] = wind_speed[var]
 
         return ds, tmp_res
-
-    def write_spatial_var(self, var_name):
-        pass
 
 
 if __name__ == "__main__":

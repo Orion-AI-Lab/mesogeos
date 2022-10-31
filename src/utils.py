@@ -1,6 +1,10 @@
 import os
 import xarray as xr
 import datetime
+import geopandas as gpd
+import pandas as pd
+import numpy as np
+from shapely import wkt
 
 
 def create_modis_dicts(input_path, modis_tiles, start_date, end_date):
@@ -18,6 +22,37 @@ def create_modis_dicts(input_path, modis_tiles, start_date, end_date):
                 else:
                     files_dict[date] = [input_path / f]
     return files_dict
+
+
+def read_dem(dataset_path):
+    return xr.open_dataset(dataset_path)
+
+
+def read_burned_areas(dataset_path, product):
+    common_crs = 'epsg:4326'
+
+    ba_df = gpd.read_file(dataset_path)
+    ba_df['IGNITION_DATE'] = pd.to_datetime(ba_df.IGNITION_D)
+    ba_df['IGNITION_DATE'] = ba_df['IGNITION_DATE'].dt.date
+    if product == 'IGNITION_POINTS':
+        ba_df['geometry_h'] = ba_df['geometry_h'].apply(wkt.loads)
+        ba_df = ba_df.set_geometry('geometry_h')
+    ba_df = ba_df.to_crs(common_crs)
+    list_of_dates = ba_df['IGNITION_DATE'].tolist()
+
+    return ba_df, list_of_dates
+
+
+def create_bas_files(bas_ds, list_of_dates, i, product):
+    if i + pd.Timedelta("1 days") in list_of_dates:
+        ind = bas_ds.index[bas_ds['IGNITION_DATE'] == i + pd.Timedelta("1 days")]
+        if product == 'IGNITION_POINTS':
+            return [bas_ds.iloc[ind].geometry_h.tolist(), np.datetime64(i)]
+        elif product == 'BURNED_AREAS':
+            return [bas_ds.iloc[ind].geometry.tolist(), np.datetime64(i)]
+    else:
+        return [[], np.datetime64(i)]
+
 
 def create_era5_files(era5_ds, i):
     ds_temp = era5_ds.isel(time=slice(i*24, (i+1)*24))

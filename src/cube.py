@@ -12,7 +12,8 @@ import calendar
 
 
 class Cuber(object):
-    def __init__(self, ds_path=None, timestep_vars=None, static_vars=None, epsg_crs=None, region=None):
+    def __init__(self, ds_path=None, timestep_vars=None, static_vars=None, epsg_crs=None,
+                 region=None):
         self.ds_path = ds_path
         self.datacube = None
         self.timestep_vars = timestep_vars
@@ -33,7 +34,7 @@ class Cuber(object):
             'era5_min_rh': 'rh',
             'era5_max_d2m': 'd2m',
             'era5_max_sp': 'sp',
-            'era5_max_ssrd': 'ssrd',
+            'era5_avg_ssrd': 'ssrd',
             'era5_max_tp': 'tp',
             'sminx': 'smi',
             'burned_areas': 'burned_areas',
@@ -41,7 +42,17 @@ class Cuber(object):
             'dem': 'dem',
             'dem_aspect': 'aspect',
             'dem_slope_radians': 'slope',
-            'dem_curvature': 'curvature'
+            'dem_curvature': 'curvature',
+            'population_density': 'population',
+            'lc_agriculture': 'lc_agriculture',
+            'lc_forest': 'lc_forest',
+            'lc_grassland': 'lc_grassland',
+            'lc_wetland': 'lc_wetland',
+            'lc_settlement': 'lc_settlement',
+            'lc_shrubland': 'lc_shrubland',
+            'lc_sparse_vegetation': 'lc_sparse_vegetation',
+            'lc_water_bodies': 'lc_water_bodies',
+            'roads_distance': 'roads_distance'
         }
 
     def init_from_datacube(self, reference_path, start_date, end_date):
@@ -49,7 +60,8 @@ class Cuber(object):
         x_ = dc_reference['x']
         y_ = dc_reference['y']
 
-        timesteps = [np.datetime64(start_date + datetime.timedelta(days=x)) for x in range((end_date - start_date).days + 1)]
+        timesteps = [np.datetime64(start_date + datetime.timedelta(days=x)) for x in
+                     range((end_date - start_date).days + 1)]
 
         static_zeros = dask.array.zeros([len(y_), len(x_)], chunks={0: len(x_), 1: len(y_)}, dtype=np.float32)
         timesteps_zeros = dask.array.zeros([len(timesteps)] + [len(y_), len(x_)],
@@ -81,6 +93,8 @@ class Cuber(object):
 
         if product == 'DEM':
             ds = self._dem(filename)
+        elif product == 'DST_ROADS':
+            ds = self._roads_dst(filename)
 
         data_vars = {
             self.names[var_name]: (('y', 'x'), ds[var_name].values) for var_name in var_names
@@ -109,7 +123,6 @@ class Cuber(object):
                          )
         return
 
-
     def write_dynamic_var(self, product, files, var_names):
 
         if product in ['MOD11A1.061', 'MOD15A2H.061', 'MOD13A2.061']:
@@ -120,6 +133,10 @@ class Cuber(object):
             ds, temporal_resolution = self._smi(files)
         elif product in ['BURNED_AREAS', 'IGNITION_POINTS']:
             ds, temporal_resolution = self._burned_areas(files, var_names)
+        elif product == 'POP_DEN':
+            ds, temporal_resolution = self._pop_den(files, var_names)
+        elif product == 'LAND_COVER':
+            ds, temporal_resolution = self._lc(files, var_names)
 
         for i in range(temporal_resolution):
 
@@ -135,7 +152,7 @@ class Cuber(object):
                 coords={
                     "x": ds.x,
                     "y": ds.y,
-                    "time": ds.time
+                    "time": timestep
                 },
             ).chunk({'x': self.datacube.chunks['x'][0],
                      'y': self.datacube.chunks['y'][0],
@@ -161,15 +178,75 @@ class Cuber(object):
 
         return
 
+    def _dem(self, filename):
+        return xr.open_dataset(filename)
+
+    def _roads_dst(self, filename):
+        rd_ds = xr.open_dataset(filename).squeeze()
+        rd_ds = rd_ds.coarsen(x=10, y=10, boundary='pad').min()
+        rd_ds = rd_ds.interp(x=self.datacube['x'], y=self.datacube['y'], method='nearest')
+        rd_ds = rd_ds.rename({'band_data': 'roads_distance'})
+        return rd_ds
+
+
+    def _lc(self, filename, var_names):
+        tmp_res = 1
+        a = np.uint8(1)
+        b = np.uint8(0)
+
+        lc_ds = filename.rio.write_crs(4326)
+        lc_ds = lc_ds.sel(lon=slice(self.bounds[0] - 0.05, self.bounds[2] + 0.05),
+                          lat=slice(self.bounds[3] + 0.05, self.bounds[1] - 0.05))
+
+        for var in var_names:
+            if var == 'lc_agriculture':
+                Class = xr.where((lc_ds.lccs_class[:, :, :] >= 10) & (lc_ds.lccs_class[:, :, :] <= 40), a, b)
+            elif var == 'lc_forest':
+                Class = xr.where((lc_ds.lccs_class[:, :, :] >= 50) & (lc_ds.lccs_class[:, :, :] <= 100), a, b)
+            elif var == 'lc_grassland':
+                Class = xr.where((lc_ds.lccs_class[:, :, :] == 110) | (lc_ds.lccs_class[:, :, :] == 130), a, b)
+            elif var == 'lc_wetland':
+                Class = xr.where((lc_ds.lccs_class[:, :, :] >= 160) & (lc_ds.lccs_class[:, :, :] <= 180), a, b)
+            elif var == 'lc_settlement':
+                Class = xr.where((lc_ds.lccs_class[:, :, :] == 190), a, b)
+            elif var == 'lc_shrubland':
+                Class = xr.where((lc_ds.lccs_class[:, :, :] >= 120) & (lc_ds.lccs_class[:, :, :] <= 122), a, b)
+            elif var == 'lc_sparse_vegetation':
+                Class = xr.where((lc_ds.lccs_class[:, :, :] >= 140) & (lc_ds.lccs_class[:, :, :] <= 153) | (
+                            lc_ds.lccs_class[:, :, :] >= 200) & (lc_ds.lccs_class[:, :, :] <= 202) |
+                                 (lc_ds.lccs_class[:, :, :] == 220), a, b)
+            elif var == 'lc_water_bodies':
+                Class = xr.where(lc_ds.lccs_class[:, :, :] == 210, a, b)
+
+            classes = Class.coarsen(lon=3, lat=3, boundary='pad').sum()
+            classes = classes.where(classes < 0, classes / 9)
+            classes = classes.to_dataset()
+            classes = classes.rename({'lccs_class': var, 'lat': 'y', 'lon': 'x'})
+            classes = classes.interp(x=self.datacube['x'], y=self.datacube['y'])
+
+            if var == 'lc_agriculture':
+                final_classes = classes
+            else:
+                final_classes[var] = classes[var]
+
+        return final_classes, tmp_res
+
+
+    def _pop_den(self, pop_den, name):
+        tmp_res = 1
+        ds_pop_den, dt = pop_den
+        ds_pop_den = ds_pop_den.squeeze()
+        ds_pop_den = ds_pop_den.interp(x=self.datacube['x'].values, y=self.datacube['y'].values, method='nearest')
+        ds_pop_den = ds_pop_den.rename({'band_data': name[0]})
+        ds_pop_den = ds_pop_den.expand_dims({'time': [np.datetime64(pd.to_datetime(dt))]})
+        return ds_pop_den, tmp_res
+
     def transform_from_latlon(self, lat, lon):
         lat = np.asarray(lat)
         lon = np.asarray(lon)
         trans = Affine.translation(lon[0], lat[0])
         scale = Affine.scale(lon[1] - lon[0], lat[1] - lat[0])
         return trans * scale
-
-    def _dem(self, filename):
-        return xr.open_dataset(filename)
 
     def _burned_areas(self, filenames, var):
 
@@ -306,7 +383,8 @@ class Cuber(object):
 
         wind_speed['time'] = wind_speed['time'] - pd.Timedelta("1 days") - pd.Timedelta("11.5 H")
 
-        wind_speed = wind_speed.interp(x=self.datacube['x'].values, y=self.datacube['y'].values, method='nearest').rename(
+        wind_speed = wind_speed.interp(x=self.datacube['x'].values, y=self.datacube['y'].values,
+                                       method='nearest').rename(
             {i: 'era5_max_wind_{}'.format(i) for i in wind_speed.data_vars})
 
         ds_temp = ds_temp.isel(time=slice(0, 24))
@@ -322,11 +400,14 @@ class Cuber(object):
         era5_ds_avg = ds_temp.rename({'longitude': 'x', 'latitude': 'y'}).coarsen(time=24).mean()
         era5_ds_avg['time'] = era5_ds_avg['time'] - pd.Timedelta("1 days") - pd.Timedelta("11.5 H")
 
-        era5_ds_max = era5_ds_max.interp(x=self.datacube['x'].values, y=self.datacube['y'].values, method='nearest').rename(
+        era5_ds_max = era5_ds_max.interp(x=self.datacube['x'].values, y=self.datacube['y'].values,
+                                         method='nearest').rename(
             {i: 'era5_max_{}'.format(i) for i in ds_temp.data_vars})
-        era5_ds_min = era5_ds_min.interp(x=self.datacube['x'].values, y=self.datacube['y'].values, method='nearest').rename(
+        era5_ds_min = era5_ds_min.interp(x=self.datacube['x'].values, y=self.datacube['y'].values,
+                                         method='nearest').rename(
             {i: 'era5_min_{}'.format(i) for i in ds_temp.data_vars})
-        era5_ds_avg = era5_ds_avg.interp(x=self.datacube['x'].values, y=self.datacube['y'].values, method='nearest').rename(
+        era5_ds_avg = era5_ds_avg.interp(x=self.datacube['x'].values, y=self.datacube['y'].values,
+                                         method='nearest').rename(
             {i: 'era5_avg_{}'.format(i) for i in ds_temp.data_vars})
 
         ds = era5_ds_max

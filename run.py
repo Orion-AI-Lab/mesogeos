@@ -24,11 +24,18 @@ parser.add_argument('--burned_areas_data_path', type=str, default='jh-shared/ipr
                     help='Path for the data. Default "jh-shared/iprapas/uc3"')
 parser.add_argument('--dem_data_path', type=str, default='jh-shared/iprapas/uc3/MED/dem_products.nc',
                     help='Path for the data. Default "jh-shared/iprapas/uc3"')
+parser.add_argument('--roads_distance_data_path', type=str, default='jh-shared/iprapas/uc3/MED/DST_ROADINTERSEC/med_dst_roadintersec.tif',
+                    help='Path for the data. Default "jh-shared/iprapas/uc3"')
+parser.add_argument('--pop_den_data_path', type=str, default='jh-shared/iprapas/uc3/MED/POP_DEN',
+                    help='Path for the data. Default "jh-shared/iprapas/uc3"')
+parser.add_argument('--lc_data_path', type=str, default='jh-shared/iprapas/uc3/MED/LAND_COVER_MAPS',
+                    help='Path for the data. Default "jh-shared/iprapas/uc3"')
 parser.add_argument('--ref_data_path', type=str, default='',
                     help='Path for the data. Default ""')
 parser.add_argument('--results_path', type=str, default='jh-shared/med_cube/med_cube_test',
                     help='The path to save results into. Default "jh-shared/iprapas/uc3"')
-parser.add_argument('--start_date', type=lambda s: datetime.datetime.strptime(s, '%Y-%m-%d').date(), default='2002-04-01',
+parser.add_argument('--start_date', type=lambda s: datetime.datetime.strptime(s, '%Y-%m-%d').date(),
+                    default='2002-04-01',
                     help='The start date of the cube in format "Year-Month-Day"')
 parser.add_argument('--end_date', type=lambda s: datetime.datetime.strptime(s, '%Y-%m-%d').date(), default='2022-10-01',
                     help='The end date of the cube in format "Year-Month-Day"')
@@ -49,6 +56,9 @@ def main():
     sm_data_path = Path.home() / args.soil_moisture_data_path
     bas_data_path = Path.home() / args.burned_areas_data_path
     dem_data_path = Path.home() / args.dem_data_path
+    pop_den_data_path = Path.home() / args.pop_den_data_path
+    lc_data_path = Path.home() / args.lc_data_path
+    rd_data_path = Path.home() / args.roads_distance_data_path
 
     results_path = Path.home() / args.results_path
 
@@ -77,43 +87,75 @@ def main():
         'tp',
         'smi',
         'burned_areas',
-        'ignition_points'
+        'ignition_points',
+        'population',
+        'lc_agriculture',
+        'lc_forest',
+        'lc_grassland',
+        'lc_wetland',
+        'lc_settlement',
+        'lc_shrubland',
+        'lc_sparse_vegetation',
+        'lc_water_bodies'
     ]
 
     static_vars = ['dem',
                    'slope',
                    'aspect',
-                   'curvature']
+                   'curvature',
+                   'roads_distance'
+                   ]
 
-    datacube = Cuber(ds_path=results_path, timestep_vars=timestep_vars, static_vars=static_vars, epsg_crs=args.epsg,
-                     region=aoi_total_bounds)
+    datacube = Cuber(ds_path=results_path, timestep_vars=timestep_vars, static_vars=static_vars,
+                     epsg_crs=args.epsg, region=aoi_total_bounds)
 
     datacube.init_from_datacube(ref_path, args.start_date, args.end_date)
 
-    #ADD DEM DATA
-    datacube.write_static_var('DEM', dem_data_path, ['dem', 'dem_aspect', 'dem_slope_radians', 'dem_curvature'])
-    print('DEM products appended to the datacube')
-
-    #ADD BURNED AREAS AND IGNITIONS
-    for product in ['BURNED_AREAS', 'IGNITION_POINTS']:
-        bas_ds, dates_with_fire = utils.read_burned_areas(bas_data_path, product)
+    # ADD ERA5_LAND
+    filenames = os.listdir(era5_data_path)
+    for year in range(args.start_date.year, args.end_date.year + 1):
+        era5_ds = utils.open_era5_ds(era5_data_path, filenames, year)
         _ = Parallel(n_jobs=16)(
-                delayed(datacube.write_dynamic_var)(product, utils.create_bas_files(bas_ds, dates_with_fire, dt, product),
-                                                    [product.lower()])
-                for dt in
-                [args.start_date + datetime.timedelta(days=i) for i in range((args.end_date-args.start_date).days + 1)])
-        print(product + ' appended to the cube')
+            delayed(datacube.write_dynamic_var)('ERA5-Land', utils.create_era5_files(era5_ds, i),
+                                                ['era5_max_t2m', 'era5_max_wind_speed', 'era5_min_rh', 'era5_max_d2m',
+                                                 'era5_max_sp', 'era5_avg_ssrd', 'era5_max_tp'])
+            for i in range(int(len(era5_ds['time']) / 24)))
+    print('ERA5-Land appended to the cube')
 
     # ADD MODIS
     files_dict = {}
     for product in ['MOD11A1.061', 'MOD15A2H.061', 'MOD13A2.061']:
         files_dict[product] = utils.create_modis_dicts(modis_data_path / product, args.modis_tiles,
-                                                       args.start_date, args.end_date)
+                                                       args.start_date, args.end_date, product)
         _ = Parallel(n_jobs=16)(
             delayed(datacube.write_dynamic_var)(product, files_dict[product][f], variables_modis[product]) for f in
             files_dict[product])
         print(product + ' appended to the cube')
 
+    # ADD DEM DATA
+    datacube.write_static_var('DEM', dem_data_path, ['dem', 'dem_aspect', 'dem_slope_radians', 'dem_curvature'])
+    print('DEM products appended to the datacube')
+
+    # ADD DISTANCE TO ROADS
+    datacube.write_static_var('DST_ROADS', rd_data_path, ['roads_distance'])
+    print('DISTANCE TO ROADS appended to the datacube')
+
+    # ADD POP_DEN DATA
+    filenames = os.listdir(pop_den_data_path)
+    _ = Parallel(n_jobs=16)(
+        delayed(datacube.write_dynamic_var)('POP_DEN', utils.open_pop_den_ds(pop_den_data_path, filenames, year),
+                                           ['population_density'])
+        for year in range(args.start_date.year, args.end_date.year + 1))
+    print('POPULATION DENSITY appended to the cube')
+
+    # ADD LAND COVER DATA
+    filenames = os.listdir(lc_data_path)
+    _ = Parallel(n_jobs=16)(
+        delayed(datacube.write_dynamic_var)('LAND_COVER', utils.open_lc_ds(lc_data_path, filenames, year),
+                                            ['lc_agriculture', 'lc_forest', 'lc_grassland', 'lc_wetland',
+                                             'lc_settlement', 'lc_shrubland', 'lc_sparse_vegetation', 'lc_water_bodies'])
+        for year in range(args.start_date.year, args.end_date.year + 1))
+    print('LAND COVER appended to the cube')
 
     # ADD SOIL MOISTURE
     filenames = os.listdir(sm_data_path)
@@ -125,17 +167,15 @@ def main():
             for i in range(len(sm_ds['time'])))
     print('Soil Moisture appended to the cube')
 
-
-    #ADD ERA5_LAND
-    filenames = os.listdir(era5_data_path)
-    for year in range(args.start_date.year, args.end_date.year + 1):
-        era5_ds = utils.open_era5_ds(era5_data_path, filenames, year)
+    # ADD BURNED AREAS AND IGNITIONS
+    for product in ['BURNED_AREAS', 'IGNITION_POINTS']:
+        bas_ds, dates_with_fire = utils.read_burned_areas(bas_data_path, product)
         _ = Parallel(n_jobs=16)(
-                delayed(datacube.write_dynamic_var)('ERA5-Land', utils.create_era5_files(era5_ds, i),
-                ['era5_max_t2m', 'era5_max_wind_speed', 'era5_min_rh', 'era5_max_d2m', 'era5_max_sp', 'era5_max_ssrd', 'era5_max_tp'])
-                for i in range(int(len(era5_ds['time'])/24)))
-    print('ERA5-Land appended to the cube')
-
+            delayed(datacube.write_dynamic_var)(product, utils.create_bas_files(bas_ds, dates_with_fire, dt, product),
+                                                [product.lower()])
+            for dt in
+            [args.start_date + datetime.timedelta(days=i) for i in range((args.end_date - args.start_date).days + 1)])
+        print(product + ' appended to the cube')
 
 if __name__ == "__main__":
     main()

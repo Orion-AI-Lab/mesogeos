@@ -7,7 +7,7 @@ import numpy as np
 from shapely import wkt
 
 
-def create_modis_dicts(input_path, modis_tiles, start_date, end_date):
+def create_modis_dicts(input_path, modis_tiles, start_date, end_date, product):
     files = os.listdir(input_path)
     files.sort()
 
@@ -21,6 +21,25 @@ def create_modis_dicts(input_path, modis_tiles, start_date, end_date):
                     files_dict[date].append(input_path / f)
                 else:
                     files_dict[date] = [input_path / f]
+    if product == 'MOD11A1.061':
+        del files_dict[datetime.datetime.strptime('2003358', '%Y%j').date()]
+        del files_dict[datetime.datetime.strptime('2010064', '%Y%j').date()]
+        files_dict[datetime.datetime.strptime('2006172', '%Y%j').date()] = files_dict[
+            datetime.datetime.strptime('2006171', '%Y%j').date()]
+        files_dict[datetime.datetime.strptime('2015190', '%Y%j').date()] = files_dict[
+            datetime.datetime.strptime('2015189', '%Y%j').date()]
+        files_dict[datetime.datetime.strptime('2021265', '%Y%j').date()] = files_dict[
+            datetime.datetime.strptime('2021264', '%Y%j').date()]
+        files_dict[datetime.datetime.strptime('2019344', '%Y%j').date()] = files_dict[
+            datetime.datetime.strptime('2019343', '%Y%j').date()]
+        files_dict[datetime.datetime.strptime('2017085', '%Y%j').date()] = files_dict[
+            datetime.datetime.strptime('2017084', '%Y%j').date()]
+        files_dict[datetime.datetime.strptime('2019169', '%Y%j').date()] = files_dict[
+            datetime.datetime.strptime('2019168', '%Y%j').date()]
+    if product == 'MOD15A2H.061':
+        files_dict[datetime.datetime.strptime('2019233', '%Y%j').date()] = files_dict[
+            datetime.datetime.strptime('2019225', '%Y%j').date()]
+
     return files_dict
 
 
@@ -32,8 +51,7 @@ def read_burned_areas(dataset_path, product):
     common_crs = 'epsg:4326'
 
     ba_df = gpd.read_file(dataset_path)
-    ba_df['IGNITION_DATE'] = pd.to_datetime(ba_df.IGNITION_D)
-    ba_df['IGNITION_DATE'] = ba_df['IGNITION_DATE'].dt.date
+    ba_df['IGNITION_DATE'] = pd.to_datetime(ba_df.IGNITION_D).dt.date
     if product == 'IGNITION_POINTS':
         ba_df['geometry_h'] = ba_df['geometry_h'].apply(wkt.loads)
         ba_df = ba_df.set_geometry('geometry_h')
@@ -69,6 +87,39 @@ def open_era5_ds(data_path, filenames, year):
     path = data_path / file
     ds = xr.open_dataset(path)
     return ds
+
+
+def open_lc_ds(data_path, filenames, year):
+    if year <= 2020:
+        file = [f for f in filenames if str(year) in f]
+    else:
+        file = [f for f in filenames if '2020' in f]
+    file = file[0]
+    path = data_path / file
+    ds = xr.open_dataset(path)
+    if year != 2002:
+        dt = '01-01-' + str(year)
+    else:
+        dt = '04-01-' + str(year)
+    dt = np.datetime64(pd.to_datetime(dt))
+    ds['time'].values[0] = dt
+    return ds
+
+
+def open_pop_den_ds(data_path, filenames, year):
+    if year <= 2020:
+        file = [f for f in filenames if str(year) in f]
+    else:
+        file = [f for f in filenames if '2020' in f]
+    file = file[0]
+    path = data_path / file
+    ds = xr.open_dataset(path)
+    if year != 2002:
+        dt = '01-01-' + str(year)
+    else:
+        dt = '04-01-' + str(year)
+    pop_den_year = np.datetime64(pd.to_datetime(dt))
+    return ds, pop_den_year
 
 
 def open_smi_ds(data_path, filenames, year):

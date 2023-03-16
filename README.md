@@ -45,6 +45,10 @@ Vriables in the cube:
 | tp | m | day's total precipitation |
 | wind_speed | m/s | day's maximum wind speed |
 
+An example of some variables for a day in the cube:
+![image](https://user-images.githubusercontent.com/76213770/225653285-754a7d4a-8f32-4200-820b-d3614e14b864.png)
+
+
 The full datacube can be downloaded from here: https://drive.google.com/drive/folders/1P_KLpmslD2wePHxaAtHWVduaNatDg74e?usp=share_link
 
 Details of the data cube:

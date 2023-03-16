@@ -45,14 +45,18 @@ Vriables in the cube:
 | tp | m | day's total precipitation |
 | wind_speed | m/s | day's maximum wind speed |
 
-The full datacube can be downloaded from here: 
+The full datacube can be downloaded from here: https://drive.google.com/drive/folders/1P_KLpmslD2wePHxaAtHWVduaNatDg74e?usp=share_link
 
 Details of the data cube:
 - temporal_extent : (2002-04-01, 2022-09-30)
 - spatial_extent : (-10.72, 30.07, 36.74, 47.7)
 - crs : EPSG:4326
 
-Creators : Spyros Kondylatos, Ioannis Prapas, Ioannis Papoutsis
+Creators: Spyros Kondylatos, Ioannis Prapas, Ioannis Papoutsis
+
+DOI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7473331.svg)](https://doi.org/10.5281/zenodo.7473331)
+
+Cite as: Spyros Kondylatos, Ioannis Prapas, & Ioannis Papoutsis. (2022). mesogeos: A Daily Datacube for the Modeling and Analysis of Wildfires in the Mediterranean (v1.0) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.7473331
 
 License : Creative Commons Attribution v4
 

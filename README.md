@@ -58,9 +58,9 @@ Details of the data cube:
 
 Creators: Spyros Kondylatos, Ioannis Prapas, Ioannis Papoutsis
 
-DOI: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7473331.svg)](https://doi.org/10.5281/zenodo.7473331)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7741518.svg)](https://doi.org/10.5281/zenodo.7741518)
 
-Cite as: Spyros Kondylatos, Ioannis Prapas, & Ioannis Papoutsis. (2022). mesogeos: A Daily Datacube for the Modeling and Analysis of Wildfires in the Mediterranean (v1.0) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.7473331
+Cite as: Spyros Kondylatos, Ioannis Prapas, & Ioannis Papoutsis. (2023). mesogeos: A Daily Datacube for the Modeling and Analysis of Wildfires in the Mediterranean (v1.1) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.7741518
 
 License : Creative Commons Attribution v4
 

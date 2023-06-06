@@ -10,7 +10,7 @@ TODO: Add instructions to download the dataset.
 
 ### Generating the data
 
-With the mesogeos datacube downloaded (see [mesogeos/README.md](../README.md)), you can generate the dataset using the [dataset_extraction.py](./dataset_extraction.py) script.
+With the mesogeos datacube downloaded (see [mesogeos/README.md](/README.md)), you can generate the dataset using the [dataset_extraction.py](./dataset_extraction.py) script.
 
 ```
 python dataset_extraction.py --ds_path <path_to_datacube> --gdf_path <path_to_shapefile> --save_dir <save_directory> --patch_half <half_of_patch_size_around_ignition> --days_before <days_before_ignition> --days_after <days_after_ignition>

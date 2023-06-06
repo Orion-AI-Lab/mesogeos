@@ -13,6 +13,7 @@ This is the official main repository of the mesogeos dataset. It contains the fo
 
 ## Table of Contents
 
+- [Downloading the data](#downloading-the-data)
 - [Datacube Generation](#datacube-generation)
 - [Machine Learning Tracks](#machine-learning-tracks)
  - [Track A: Wildfire Danger Forecasting](#track-a-wildfire-danger-forecasting)

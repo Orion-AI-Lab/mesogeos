@@ -8,6 +8,7 @@ This is the official main repository of the mesogeos dataset. It contains the fo
 **Authors**: *Spyros Kondylatos (1, 2), Ioannis Prapas (1, 2), Gustau Camps-Valls (2), Ioannis Papoutsis (1)*
 
 *(1) Orion Lab, IAASARS, National Observatory of Athens*
+
 *(2) Image & Signal Processing Group, Universitat de València*
 
 ## Table of Contents
@@ -28,7 +29,7 @@ TODO: Add instructions to download the dataset and explain the directory structu
 
 ## Datacube Generation
 
-Find the code to generate a datacube like mesogeos in [datacube_creation](./dataset_creation).
+Find the code to generate a datacube like mesogeos in [datacube_creation](./dataset_creation/).
 
 ## Machine Learning Tracks
 ### Track A: Wildfire Danger Forecasting
@@ -42,25 +43,6 @@ More details in [Track A](./ml_tracks/a.fire_danger/)
 This track is about predicting the final burned area of a wildfire given the ignition point and the conditions of the fire drivers at the first day of the fire in a neighborhood around the ignition point.
 
 More details in [Track B](./ml_tracks/b.final_burned_area/README.md)
-
-## Contributing
-
-We welcome new contributions for new models and new machine learning tracks!
-
-**New Model**: To contribute a new model for an existing track, your code has to be (i) open, (ii) reproducible (we should be able to easily run your code and get the reported results) and (iii) use the same dataset split defined for the track. 
-After we verify your results, you get to **add your model and name to the leaderboard**. 
-Check the current [leaderboards](https://orion-ai-lab.github.io/mesogeos/).
-
-[Submit a new issue](https://github.com/Orion-AI-Lab/mesogeos/issues/new/choose) containing a link to your code.
-
-**New ML Track**: To contribute a new track, [submit a new issue](https://github.com/Orion-AI-Lab/mesogeos/issues/new/choose).
-
-We recommend at minimum:
-
-1. a dataset extraction process that samples from mesogeos,
-2. a description of the task,
-3. a baseline model,
-4. appropriate metrics.
 
 ## Datacube Details
 
@@ -116,19 +98,41 @@ An example of some variables for a day in the cube:
 ![image](https://user-images.githubusercontent.com/76213770/225653285-754a7d4a-8f32-4200-820b-d3614e14b864.png)
 
 
-Datacube Metadata:
-- temporal_extent : (2006-04-01, 2022-09-30)
-- spatial_extent : (-10.72, 30.07, 36.74, 47.7) - The wider Mediterranean region.
-- crs : EPSG:4326
+**Datacube Metadata**
+
+- Temporal Extent: `(2006-04-01, 2022-09-30)`
+- Spatial Extent: `(-10.72, 30.07, 36.74, 47.7)`, i.e. the wider Mediterranean region.
+- Coordinate Reference System: `EPSG:4326`
 
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7741518.svg)](https://doi.org/10.5281/zenodo.7741518)
 
-Citation :
+**Datacube Citation** 
 
 ```
-Spyros Kondylatos, Ioannis Prapas, & Ioannis Papoutsis. (2023). mesogeos: A Daily Datacube for the Modeling and Analysis of Wildfires in the Mediterranean (v1.1) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.7741518
+Spyros Kondylatos, Ioannis Prapas, & Ioannis Papoutsis. (2023). 
+mesogeos: A Daily Datacube for the Modeling and Analysis of Wildfires in the Mediterranean (v1.1) [Data set]. 
+Zenodo. https://doi.org/10.5281/zenodo.7741518
 ```
+
+## Contributing
+
+We welcome new contributions for new models and new machine learning tracks!
+
+**New Model**: To contribute a new model for an existing track, your code has to be (i) open, (ii) reproducible (we should be able to easily run your code and get the reported results) and (iii) use the same dataset split defined for the track. 
+After we verify your results, you get to **add your model and name to the leaderboard**. 
+Check the current [leaderboards](https://orion-ai-lab.github.io/mesogeos/).
+
+[Submit a new issue](https://github.com/Orion-AI-Lab/mesogeos/issues/new/choose) containing a link to your code.
+
+**New ML Track**: To contribute a new track, [submit a new issue](https://github.com/Orion-AI-Lab/mesogeos/issues/new/choose).
+
+We recommend at minimum:
+
+1. a dataset extraction process that samples from mesogeos,
+2. a description of the task,
+3. a baseline model,
+4. appropriate metrics.
 
 ### License
 

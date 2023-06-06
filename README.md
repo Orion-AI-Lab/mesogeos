@@ -51,7 +51,9 @@ mesogeos is meant to be used to develop models wildfire modeling in the Mediterr
 It contains variables related to the ignition and spread of wildfire for the years 2006 to 2022 at a daily 1km x 1km grid.
 
 <details> <summary>Datacube Variables</summary>
-Particularly, it contains :
+
+The datacube contains the following variables:
+
 - satellite data from MODIS (Land Surface Temperature (https://lpdaac.usgs.gov/products/mod11a1v061/), Normalized Vegetation Index (https://lpdaac.usgs.gov/products/mod13a2v061/), Leaf Area Index (https://lpdaac.usgs.gov/products/mod15a2hv061/))
 - weather variables from ERA5-Land (max daily temperature, max daily dewpoint temperature, min daily relative humidity, 
 max daily wind speed, max daily surface pressure, mean daily surface solar radiation downwards) (https://cds.climate.copernicus.eu/cdsapp#!/dataset/10.24381/cds.e2161bac?tab=overview)

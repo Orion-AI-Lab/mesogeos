@@ -1,4 +1,10 @@
-# mesogeos
+# Title
+
+## Abstract
+
+## Folders structure
+
+## Datacube
 
 mesogeos is meant to be used to develop models for next-day fire hazard forecasting in the Mediterranean. 
 It contains variables related to the ignition and spread of wildfire for the years 2002 to 2022 at a daily 1km x 1km grid.
@@ -63,5 +69,13 @@ Creators: Spyros Kondylatos, Ioannis Prapas, Ioannis Papoutsis
 Cite as: Spyros Kondylatos, Ioannis Prapas, & Ioannis Papoutsis. (2023). mesogeos: A Daily Datacube for the Modeling and Analysis of Wildfires in the Mediterranean (v1.1) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.7741518
 
 License : Creative Commons Attribution v4
+
+## Tracks
+
+## Track A: Wildfire danger forecasting
+
+## Track B: Final Burned Area Prediction
+
+## Other tracks
 
 Acknowledgements : This work has received funding from the European Union’s Horizon 2020 research and innovation project DeepCube, under grant agreement number 101004188.

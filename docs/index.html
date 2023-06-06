@@ -96,6 +96,17 @@
                       <span>Supplementary</span>
                     </a>
                   </span>
+				  
+				  <!-- Google Drive Dataset link -->
+                    <span class="link-block">
+                      <a href="/" target="_blank"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+						  <i class="fab fa-google-drive"></i>
+                      </span>
+                      <span>Dataset</span>
+                    </a>
+                  </span>
 
                   <!-- Github link -->
                   <span class="link-block">
@@ -192,15 +203,6 @@ By publishing the datacube, along with the code to create the datasets and model
             <th><abbr title="Average Precision">AUPRC</abbr></th>
           </tr>
         </thead>
-        <tfoot>
-          <tr>
-            <th><abbr title="Method">Method</abbr></th>
-            <th><abbr title="Precision">Precision</abbr></th>
-            <th><abbr title="Recall">Recall</abbr></th>
-            <th><abbr title="F1 Score">F1</abbr></th>
-            <th><abbr title="Average Precision">AUPRC</abbr></th>
-          </tr>
-        </tfoot>
         <tbody>
           <tr>
             <td><a href="https://github.com/orion-ai-lab/mesogeos" title="Mesogeos">LSTM</a>
@@ -235,10 +237,66 @@ By publishing the datacube, along with the code to create the datasets and model
 <!--End Leaderboard - Track A: Fire Danger Forecasting -->
 
 
+<!-- Leaderboard - Track B: Fire Burned Area Forecasting -->
+<section class="hero">
+  <div class="table-container">
+    <h2 class="title">Leaderboard - Track B: Fire Burned Area Forecasting</h2>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th><abbr title="Method">Method</abbr></th>
+          <th><abbr title="Cross-Entropy Loss">CE</abbr></th>
+          <th><abbr title="Average Precision">AUPRC</abbr></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="https://github.com/orion-ai-lab/mesogeos" title="Mesogeos">U-Net (all variables)</a>
+          </td>
+          <td>0.0159</td>
+          <td>0.4133</td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/orion-ai-lab/mesogeos" title="Mesogeos">U-Net (only ignitions)</a>
+          </td>
+          <td>0.0166</td>
+          <td>0.4133</td>
+        </tr>
+      </tbody>
+    </table>
+
+    </div>
+  </div>
+</section>
+<!--End Leaderboard - Track B: Fire Burned Area Forecasting -->
+
+
+<section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title">Contributing: New models or tracks</h2>
+
+      <p> 
+        To contribute a new model for an existing track, your code has to be open and reproducible and use the same dataset split defined for the track. Submit a <a a href="https://github.com/Orion-AI-Lab/mesogeos/issues/new/choose" target="_blank">new issue</a> with a link to your code.  
+ 
+        To contribute a new track, submit a <a a href="https://github.com/Orion-AI-Lab/mesogeos/issues/new/choose" target="_blank">new issue</a>. We recommend at minimum (i) a dataset extraction process that samples from mesogeos, (ii) a description of the task (iii) a baseline model (iv) appropriate metrics.  
+
+        We are here to help! We will test new models and update the leaderboard. We will also help you define and submit your new track!
+      </p>
+    
+
+
+      </div>
+    </div>
+  </section>
+
+
+
 
 
 <!-- Paper poster -->
-<section class="hero is-small is-light">
+<!-- <section class="hero is-small is-light">
   <div class="hero-body">
     <div class="container">
       <h2 class="title">Poster</h2>
@@ -248,7 +306,7 @@ By publishing the datacube, along with the code to create the datasets and model
         
       </div>
     </div>
-  </section>
+  </section> -->
 <!--End paper poster -->
 
 

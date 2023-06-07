@@ -1,0 +1,97 @@
+{
+    "name": "lala",
+    "model_type": "gtn",
+    "n_gpu": 1,
+    "gpu_id": 1,
+
+    "arch": {
+        "type": "TransformerNet",
+        "args": {}
+    },
+    "model_args": {"ff_dim": 512,
+                   "nheads": 4,
+                   "num_layers": 4,
+                   "model_dim": 256},
+
+    "dataset": {
+        "type": "FireDataset",
+        "args":{
+            "dataset_root": "",
+            "problem_class": "classification",
+            "nan_fill": 0,
+            "neg_pos_ratio": 2,
+            "lag": 30,
+            "seed": 12345
+        }
+    },
+    "dataloader": {
+        "type": "FireDataloader",
+        "args": {
+            "batch_size": 256,
+            "shuffle": true,
+            "num_workers": 16,
+            "pin_memory": false
+        }
+    },
+    "optimizer": {
+        "type": "Adam",
+        "args":{
+            "lr": 0.00012,
+            "weight_decay": 0.0045,
+            "amsgrad": false
+        }
+    },
+    "seed": 12345,
+    "loss": "nll_loss",
+    "metrics": [
+        "accuracy", "precision", "recall", "f1_score", "aucpr" ],
+
+    "lr_scheduler": {
+        "type": "StepLR",
+        "args": {
+            "step_size": 15,
+            "gamma": 0.1
+        }
+    },
+    "trainer": {
+        "epochs": 40,
+
+        "save_dir": "saved/",
+        "save_period": 1,
+        "verbosity": 2,
+
+        "monitor": "min val_loss",
+        "early_stop": 50,
+
+        "tensorboard": false
+    },
+
+
+    "features": {
+        "dynamic": ["d2m",
+                       "lai",
+                       "lst_day",
+                       "lst_night",
+                       "ndvi",
+                       "rh",
+                       "smi",
+                       "sp",
+                       "ssrd",
+                       "t2m",
+                       "tp",
+                       "wind_speed"],
+        "static": [
+                       "dem",
+                       "roads_distance",
+                       "slope",
+                       "lc_agriculture",
+                       "lc_forest",
+                       "lc_grassland",
+                       "lc_settlement",
+                       "lc_shrubland",
+                       "lc_sparse_vegetation",
+                       "lc_water_bodies",
+                       "lc_wetland",
+                       "population"]
+    }
+}

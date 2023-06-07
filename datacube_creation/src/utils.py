@@ -22,7 +22,7 @@ def create_modis_dicts(input_path, modis_tiles, start_date, end_date, product):
                 else:
                     files_dict[date] = [input_path / f]
     if product == 'MOD11A1.061':
-        del files_dict[datetime.datetime.strptime('2003358', '%Y%j').date()]
+        # del files_dict[datetime.datetime.strptime('2003358', '%Y%j').date()]
         del files_dict[datetime.datetime.strptime('2010064', '%Y%j').date()]
         files_dict[datetime.datetime.strptime('2006172', '%Y%j').date()] = files_dict[
             datetime.datetime.strptime('2006171', '%Y%j').date()]
@@ -55,6 +55,7 @@ def read_burned_areas(dataset_path, product):
     if product == 'IGNITION_POINTS':
         ba_df['geometry_h'] = ba_df['geometry_h'].apply(wkt.loads)
         ba_df = ba_df.set_geometry('geometry_h')
+    ba_df.crs = "EPSG:5643"
     ba_df = ba_df.to_crs(common_crs)
     list_of_dates = ba_df['IGNITION_DATE'].tolist()
 
@@ -65,11 +66,11 @@ def create_bas_files(bas_ds, list_of_dates, i, product):
     if i + pd.Timedelta("1 days") in list_of_dates:
         ind = bas_ds.index[bas_ds['IGNITION_DATE'] == i + pd.Timedelta("1 days")]
         if product == 'IGNITION_POINTS':
-            return [bas_ds.iloc[ind].geometry_h.tolist(), np.datetime64(i)]
+            return [bas_ds.iloc[ind].geometry_h.tolist(), bas_ds.iloc[ind].AREA_HA.tolist(), np.datetime64(i)]
         elif product == 'BURNED_AREAS':
-            return [bas_ds.iloc[ind].geometry.tolist(), np.datetime64(i)]
+            return [bas_ds.iloc[ind].geometry.tolist(), [1]*len(bas_ds.iloc[ind].geometry.tolist()), np.datetime64(i)]
     else:
-        return [[], np.datetime64(i)]
+        return [[], [], np.datetime64(i)]
 
 
 def create_era5_files(era5_ds, i):
@@ -97,7 +98,7 @@ def open_lc_ds(data_path, filenames, year):
     file = file[0]
     path = data_path / file
     ds = xr.open_dataset(path)
-    if year != 2002:
+    if year != 2006:
         dt = '01-01-' + str(year)
     else:
         dt = '04-01-' + str(year)
@@ -114,7 +115,7 @@ def open_pop_den_ds(data_path, filenames, year):
     file = file[0]
     path = data_path / file
     ds = xr.open_dataset(path)
-    if year != 2002:
+    if year != 2006:
         dt = '01-01-' + str(year)
     else:
         dt = '04-01-' + str(year)

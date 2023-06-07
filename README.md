@@ -1,9 +1,59 @@
-# mesogeos
+# mesogeos: A multi-purpose dataset for data-driven wildfire modeling in the Mediterranean
 
-mesogeos is meant to be used to develop models for next-day fire hazard forecasting in the Mediterranean. 
-It contains variables related to the ignition and spread of wildfire for the years 2002 to 2022 at a daily 1km x 1km grid.
+This is the official main repository of the mesogeos dataset. It contains the following:
+* code to create the mesogeos datacube
+* code that extracts machine learning datasets for different tracks
+* code that trains and evaluates machine learning models for these tracks
 
-Particularly, it contains :
+**Authors**: *Spyros Kondylatos (1, 2), Ioannis Prapas (1, 2), Gustau Camps-Valls (2), Ioannis Papoutsis (1)*
+
+*(1) Orion Lab, IAASARS, National Observatory of Athens*
+
+*(2) Image & Signal Processing Group, Universitat de València*
+
+## Table of Contents
+
+- [Downloading the data](#downloading-the-data)
+- [Datacube Generation](#datacube-generation)
+- [Machine Learning Tracks](#machine-learning-tracks)
+ - [Track A: Wildfire Danger Forecasting](#track-a-wildfire-danger-forecasting)
+ - [Track B: Final Burned Area Prediction](#track-b-final-burned-area-prediction)
+- [Contributing](#contributing)
+- [Datacube Details](#datacube-details)
+- [Citation](#citation)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
+
+## Downloading the data
+
+TODO: Add instructions to download the dataset and explain the directory structure.
+
+## Datacube Generation
+
+Find the code to generate a datacube like mesogeos in [datacube_creation](datacube_creation/).
+
+## Machine Learning Tracks
+### Track A: Wildfire Danger Forecasting
+
+This track defines wildfire danger forecasting as a binary classification problem.
+
+More details in [Track A](./ml_tracks/a.fire_danger/)
+
+### Track B: Final Burned Area Prediction
+
+This track is about predicting the final burned area of a wildfire given the ignition point and the conditions of the fire drivers at the first day of the fire in a neighborhood around the ignition point.
+
+More details in [Track B](./ml_tracks/b.final_burned_area/README.md)
+
+## Datacube Details
+
+mesogeos is meant to be used to develop models for wildfire modeling in the Mediterranean. 
+It contains variables related to the ignition and spread of wildfire for the years 2006 to 2022 at a daily 1km x 1km grid.
+
+<details> <summary>Datacube Variables</summary>
+
+The datacube contains the following variables:
+
 - satellite data from MODIS (Land Surface Temperature (https://lpdaac.usgs.gov/products/mod11a1v061/), Normalized Vegetation Index (https://lpdaac.usgs.gov/products/mod13a2v061/), Leaf Area Index (https://lpdaac.usgs.gov/products/mod15a2hv061/))
 - weather variables from ERA5-Land (max daily temperature, max daily dewpoint temperature, min daily relative humidity, 
 max daily wind speed, max daily surface pressure, mean daily surface solar radiation downwards) (https://cds.climate.copernicus.eu/cdsapp#!/dataset/10.24381/cds.e2161bac?tab=overview)
@@ -18,10 +68,10 @@ Vriables in the cube:
 | --- | --- | --- |
 | aspect | ° | aspect |
 | burned areas | unitless | rasterized burned polygons. 0 when no burned area occurs in that cell, 1 if it does for the day of interest |
-| curvature | | curvature |
+| curvature | rad | curvature |
 | d2m | K | day's maximum 2 metres dewpoint temperature |
 | dem | m | elevation |
-| ignition_points | unitless | rasterized fire ignitions. 0 when no fire ignition occurs in that cell, 1 if it does for the day of interest |
+| ignition_points | hectares | rasterized fire ignitions. It contains the final hectares of the burned area resulted from the fire |
 | lai | unitless | leaf area index |
 | lc_agriculture | % | fraction of agriculture in the pixel. 1st Jan of each year has the values of the year |
 | lc_forest | % | fraction of forest in the pixel. 1st Jan of each year has the values of the year |
@@ -34,34 +84,69 @@ Vriables in the cube:
 | lst_day | K | day's land surface temperature |
 | lst_night | K | nights' land surface temperature |
 | ndvi | unitless | normalized difference vegetation index |
-| population | humans/km^2 | population count per year. 1st Jan of each year has the values of the year |
+| population | people/km^2 | population count per year. 1st Jan of each year has the values of the year |
 | rh | %/100 | day's minimum relative humidity |
 | roads_distance | km | distance from the nearest road |
-| slope | | slope |
+| slope | rad | slope |
 | smi | unitless | soil moisture index |
 | sp | Pa | day's maximum surface pressure |
-| ssrd | | day's average surface solar radiation downwards |
+| ssrd | J/m^2| day's average surface solar radiation downwards |
 | t2m | K | day's maximum 2 metres temperature |
 | tp | m | day's total precipitation |
 | wind_speed | m/s | day's maximum wind speed |
+
+</details>
 
 An example of some variables for a day in the cube:
 ![image](https://user-images.githubusercontent.com/76213770/225653285-754a7d4a-8f32-4200-820b-d3614e14b864.png)
 
 
-The full datacube can be downloaded from here: https://drive.google.com/drive/folders/1P_KLpmslD2wePHxaAtHWVduaNatDg74e?usp=share_link
+**Datacube Metadata**
 
-Details of the data cube:
-- temporal_extent : (2002-04-01, 2022-09-30)
-- spatial_extent : (-10.72, 30.07, 36.74, 47.7)
-- crs : EPSG:4326
+- Temporal Extent: `(2006-04-01, 2022-09-29)`
+- Spatial Extent: `(-10.72, 30.07, 36.74, 47.7)`, i.e. the wider Mediterranean region.
+- Coordinate Reference System: `EPSG:4326`
 
-Creators: Spyros Kondylatos, Ioannis Prapas, Ioannis Papoutsis
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7741518.svg)](https://doi.org/10.5281/zenodo.7741518)
 
-Cite as: Spyros Kondylatos, Ioannis Prapas, & Ioannis Papoutsis. (2023). mesogeos: A Daily Datacube for the Modeling and Analysis of Wildfires in the Mediterranean (v1.1) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.7741518
+**Datacube Citation** 
 
-License : Creative Commons Attribution v4
+```
+Spyros Kondylatos, Ioannis Prapas, & Ioannis Papoutsis. (2023). 
+mesogeos: A Daily Datacube for the Modeling and Analysis of Wildfires in the Mediterranean (v1.1) [Data set]. 
+Zenodo. https://doi.org/10.5281/zenodo.7741518
+```
 
-Acknowledgements : This work has received funding from the European Union’s Horizon 2020 research and innovation project DeepCube, under grant agreement number 101004188.
+## Contributing
+
+We welcome new contributions for new models and new machine learning tracks!
+
+**New Model**: To contribute a new model for an existing track, your code has to be (i) open, (ii) reproducible (we should be able to easily run your code and get the reported results) and (iii) use the same dataset split defined for the track. 
+After we verify your results, you get to **add your model and name to the leaderboard**. 
+Check the current [leaderboards](https://orion-ai-lab.github.io/mesogeos/).
+
+[Submit a new issue](https://github.com/Orion-AI-Lab/mesogeos/issues/new/choose) containing a link to your code.
+
+**New ML Track**: To contribute a new track, [submit a new issue](https://github.com/Orion-AI-Lab/mesogeos/issues/new/choose).
+
+We recommend at minimum:
+
+1. a dataset extraction process that samples from mesogeos,
+2. a description of the task,
+3. a baseline model,
+4. appropriate metrics.
+
+### License
+
+Creative Commons Attribution v4
+
+### Citation
+
+```
+TODO
+```
+
+### Acknowledgements 
+
+This work has received funding from the European Union’s Horizon 2020 Research and Innovation Projects DeepCube and TREEADS, under Grant Agreement Numbers 101004188 and 101036926353 respectively

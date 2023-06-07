@@ -31,6 +31,7 @@ class Cuber(object):
             'Lai_500m': 'lai',
             'era5_max_t2m': 't2m',
             'era5_max_wind_speed': 'wind_speed',
+            'era5_max_wind_direction': 'wind_direction',
             'era5_min_rh': 'rh',
             'era5_max_d2m': 'd2m',
             'era5_max_sp': 'sp',
@@ -193,9 +194,8 @@ class Cuber(object):
         tmp_res = 1
         a = np.uint8(1)
         b = np.uint8(0)
-
-        lc_ds = filename.rio.write_crs(4326)
-        lc_ds = lc_ds.sel(lon=slice(self.bounds[0] - 0.05, self.bounds[2] + 0.05),
+        # lc_ds = filename.rio.write_crs(4326)
+        lc_ds = filename.sel(lon=slice(self.bounds[0] - 0.05, self.bounds[2] + 0.05),
                           lat=slice(self.bounds[3] + 0.05, self.bounds[1] - 0.05))
 
         for var in var_names:
@@ -252,18 +252,20 @@ class Cuber(object):
 
         tmp_res = 1
 
-        files, dt = filenames[0], filenames[1]
+        files, sizes, dt = filenames[0], filenames[1], filenames[2]
 
         a = np.zeros(shape=(len(self.datacube['y']), len(self.datacube['x'])))
 
         if files:
-            for g in files:
+            for i in range(len(files)):
                 mask = rasterio.features.geometry_mask(
-                    [g],
+                    [files[i]],
                     out_shape=(len(self.datacube['y']), len(self.datacube['x'])),
                     transform=self.transform_from_latlon(self.datacube['y'], self.datacube['x']),
                     all_touched=True,
                     invert=True)
+                mask = mask.astype(float)
+                mask[mask == 1] = float(sizes[i])
                 a += mask
 
         a = a[np.newaxis, ...]
@@ -383,9 +385,15 @@ class Cuber(object):
 
         wind_speed['time'] = wind_speed['time'] - pd.Timedelta("1 days") - pd.Timedelta("11.5 H")
 
+        wind = wind_speed['speed'].to_dataset().interp(x=self.datacube['x'].values, y=self.datacube['y'].values,
+                                       method='linear').rename(
+            {'speed': 'era5_max_wind_speed'})
+
         wind_speed = wind_speed.interp(x=self.datacube['x'].values, y=self.datacube['y'].values,
                                        method='nearest').rename(
             {i: 'era5_max_wind_{}'.format(i) for i in wind_speed.data_vars})
+
+        wind_speed['era5_max_wind_speed'].values = wind['era5_max_wind_speed'].values
 
         ds_temp = ds_temp.isel(time=slice(0, 24))
         b = 17.625
@@ -401,13 +409,13 @@ class Cuber(object):
         era5_ds_avg['time'] = era5_ds_avg['time'] - pd.Timedelta("1 days") - pd.Timedelta("11.5 H")
 
         era5_ds_max = era5_ds_max.interp(x=self.datacube['x'].values, y=self.datacube['y'].values,
-                                         method='nearest').rename(
+                                         method='linear').rename(
             {i: 'era5_max_{}'.format(i) for i in ds_temp.data_vars})
         era5_ds_min = era5_ds_min.interp(x=self.datacube['x'].values, y=self.datacube['y'].values,
-                                         method='nearest').rename(
+                                         method='linear').rename(
             {i: 'era5_min_{}'.format(i) for i in ds_temp.data_vars})
         era5_ds_avg = era5_ds_avg.interp(x=self.datacube['x'].values, y=self.datacube['y'].values,
-                                         method='nearest').rename(
+                                         method='linear').rename(
             {i: 'era5_avg_{}'.format(i) for i in ds_temp.data_vars})
 
         ds = era5_ds_max

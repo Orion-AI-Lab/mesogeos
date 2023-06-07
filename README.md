@@ -30,7 +30,7 @@ TODO: Add instructions to download the dataset and explain the directory structu
 
 ## Datacube Generation
 
-Find the code to generate a datacube like mesogeos in [datacube_creation](./dataset_creation/).
+Find the code to generate a datacube like mesogeos in [datacube_creation](datacube_creation/).
 
 ## Machine Learning Tracks
 ### Track A: Wildfire Danger Forecasting

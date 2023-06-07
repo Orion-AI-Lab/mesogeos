@@ -47,7 +47,7 @@ More details in [Track B](./ml_tracks/b.final_burned_area/README.md)
 
 ## Datacube Details
 
-mesogeos is meant to be used to develop models wildfire modeling in the Mediterranean. 
+mesogeos is meant to be used to develop models for wildfire modeling in the Mediterranean. 
 It contains variables related to the ignition and spread of wildfire for the years 2006 to 2022 at a daily 1km x 1km grid.
 
 <details> <summary>Datacube Variables</summary>
@@ -68,10 +68,10 @@ Vriables in the cube:
 | --- | --- | --- |
 | aspect | ° | aspect |
 | burned areas | unitless | rasterized burned polygons. 0 when no burned area occurs in that cell, 1 if it does for the day of interest |
-| curvature | | curvature |
+| curvature | rad | curvature |
 | d2m | K | day's maximum 2 metres dewpoint temperature |
 | dem | m | elevation |
-| ignition_points | unitless | rasterized fire ignitions. 0 when no fire ignition occurs in that cell, 1 if it does for the day of interest |
+| ignition_points | hectares | rasterized fire ignitions. It contains the final hectares of the burned area resulted from the fire |
 | lai | unitless | leaf area index |
 | lc_agriculture | % | fraction of agriculture in the pixel. 1st Jan of each year has the values of the year |
 | lc_forest | % | fraction of forest in the pixel. 1st Jan of each year has the values of the year |
@@ -84,13 +84,13 @@ Vriables in the cube:
 | lst_day | K | day's land surface temperature |
 | lst_night | K | nights' land surface temperature |
 | ndvi | unitless | normalized difference vegetation index |
-| population | humans/km^2 | population count per year. 1st Jan of each year has the values of the year |
+| population | people/km^2 | population count per year. 1st Jan of each year has the values of the year |
 | rh | %/100 | day's minimum relative humidity |
 | roads_distance | km | distance from the nearest road |
-| slope | | slope |
+| slope | rad | slope |
 | smi | unitless | soil moisture index |
 | sp | Pa | day's maximum surface pressure |
-| ssrd | | day's average surface solar radiation downwards |
+| ssrd | J/m^2| day's average surface solar radiation downwards |
 | t2m | K | day's maximum 2 metres temperature |
 | tp | m | day's total precipitation |
 | wind_speed | m/s | day's maximum wind speed |
@@ -103,7 +103,7 @@ An example of some variables for a day in the cube:
 
 **Datacube Metadata**
 
-- Temporal Extent: `(2006-04-01, 2022-09-30)`
+- Temporal Extent: `(2006-04-01, 2022-09-29)`
 - Spatial Extent: `(-10.72, 30.07, 36.74, 47.7)`, i.e. the wider Mediterranean region.
 - Coordinate Reference System: `EPSG:4326`
 
@@ -149,4 +149,4 @@ TODO
 
 ### Acknowledgements 
 
-This work has received funding from the European Union’s Horizon 2020 research and innovation project DeepCube, under grant agreement number 101004188.
+This work has received funding from the European Union’s Horizon 2020 Research and Innovation Projects DeepCube and TREEADS, under Grant Agreement Numbers 101004188 and 101036926353 respectively

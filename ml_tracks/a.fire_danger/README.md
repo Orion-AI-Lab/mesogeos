@@ -30,6 +30,7 @@ To run the experiments that presented in the paper for the three models LSTM, Tr
 - train.py --config configs/config_transformer/config_train.json 
 - train.py --config configs/config_gtn/config_train.json
 ```
+Before running the experiments you should add the dataset path to the "dataset_root" in the config files.
 
 Similarly for testing the results: 
 ```
@@ -37,3 +38,4 @@ Similarly for testing the results:
 - test.py --config configs/config_transformer/config_test.json 
 - test.py --config configs/config_gtn/config_test.json
 ```
+Before running the tests you should add the dataset path to the "dataset_root" and the trained model path to the "model_path" in the config files 

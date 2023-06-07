@@ -14,7 +14,7 @@
     "dataset": {
         "type": "FireDataset",
         "args":{
-            "dataset_root": "/mnt/nvme1/skondylatos/",
+            "dataset_root": "",
             "problem_class": "classification",
             "nan_fill": 0,
             "neg_pos_ratio": 2,
@@ -34,8 +34,8 @@
     "optimizer": {
         "type": "Adam",
         "args":{
-            "lr": 0.001,
-            "weight_decay": 0.00025,
+            "lr": 0.004,
+            "weight_decay": 0.0063,
             "amsgrad": false
         }
     },

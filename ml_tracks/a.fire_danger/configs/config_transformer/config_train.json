@@ -11,13 +11,13 @@
 
     "model_args": {"ff_dim": 512,
                    "nheads": 2,
-                   "num_layers": 4,
+                   "num_layers": 2,
                    "model_dim": 256},
 
     "dataset": {
         "type": "FireDataset",
         "args":{
-            "dataset_root": "/mnt/nvme1/skondylatos/",
+            "dataset_root": "",
             "problem_class": "classification",
             "nan_fill": 0,
             "neg_pos_ratio": 2,
@@ -37,8 +37,8 @@
     "optimizer": {
         "type": "Adam",
         "args":{
-            "lr": 0.0002,
-            "weight_decay": 0.0006,
+            "lr": 0.00029,
+            "weight_decay": 0.0018,
             "amsgrad": false
         }
     },

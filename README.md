@@ -1,4 +1,4 @@
-# mesogeos: A multi-purpose dataset for data-driven wildfire modeling in the Mediterranean
+# Mesogeos: A multi-purpose dataset for data-driven wildfire modeling in the Mediterranean
 
 This is the official main repository of the mesogeos dataset. It contains the following:
 * code to create the mesogeos datacube

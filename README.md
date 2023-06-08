@@ -24,9 +24,9 @@ This is the official main repository of the mesogeos dataset. It contains the fo
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
 
-## Downloading the data
+## Accessing the data
 
-TODO: Add instructions to download the dataset and explain the directory structure.
+You can access the data using this [Drive link](https://drive.google.com/drive/folders/1aRXQXVvw6hz0eYgtJDoixjPQO-_bRKz9).
 
 ## Datacube Generation
 
@@ -47,7 +47,7 @@ More details in [Track B](./ml_tracks/b.final_burned_area/README.md)
 
 ## Datacube Details
 
-mesogeos is meant to be used to develop models for wildfire modeling in the Mediterranean. 
+Mesogeos is meant to be used to develop models for wildfire modeling in the Mediterranean. 
 It contains variables related to the ignition and spread of wildfire for the years 2006 to 2022 at a daily 1km x 1km grid.
 
 <details> <summary>Datacube Variables</summary>

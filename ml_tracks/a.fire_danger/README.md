@@ -7,14 +7,14 @@ and [dataset_extraction/positives.csv](./dataset_extraction/positives.ipynb) not
 
 ### Downloading the data
 
-TODO: Add instructions to download the dataset.
+Fow downloading the data refer to the README of the main page of this repository.
 
 ### Generating the data
 
 With the mesogeos datacube downloaded (see [mesogeos/README.md](/README.md)), you can generate the dataset using the two notebooks [dataset-extraction/positives.ipynb](dataset-extraction/positives.ipynb)
 and [dataset-extraction/negatives.ipynb](dataset-extraction/negatives.ipynb) notebooks.
 
-To reproduce the scripts you should also download the shapefile with the burned areas and the shapefile with the Ecoregions and add the paths to the empty path templates in the notebooks..
+To reproduce the scripts you should also download the shapefile with the burned areas and the shapefile with the Ecoregions (available in the Google drive link provided in the main page of this repository) and add the paths to the empty path templates in the notebooks.
 
 ## Reproducing the experiments
 

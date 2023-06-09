@@ -1,6 +1,10 @@
 # Mesogeos: A multi-purpose dataset for data-driven wildfire modeling in the Mediterranean
 
-This is the official main repository of the mesogeos dataset. It contains the following:
+This is the official code repository of the mesogeos dataset. 
+
+[Pre-print](https://arxiv.org/abs/2306.05144) describing the paper.
+
+The repo contains the following:
 * code to create the mesogeos datacube
 * code that extracts machine learning datasets for different tracks
 * code that trains and evaluates machine learning models for these tracks
@@ -144,7 +148,14 @@ Creative Commons Attribution v4
 ### Citation
 
 ```
-TODO
+@misc{kondylatos2023mesogeos,
+      title={Mesogeos: A multi-purpose dataset for data-driven wildfire modeling in the Mediterranean}, 
+      author={Spyros Kondylatos and Ioannis Prapas and Gustau Camps-Valls and Ioannis Papoutsis},
+      year={2023},
+      eprint={2306.05144},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
 ```
 
 ### Acknowledgements 

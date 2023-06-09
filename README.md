@@ -32,6 +32,9 @@ The repo contains the following:
 
 You can access the data using this [Drive link](https://drive.google.com/drive/folders/1aRXQXVvw6hz0eYgtJDoixjPQO-_bRKz9).
 
+[notebooks/1_Exploring_Mesogeos.ipynb](notebooks/1_Exploring_Mesogeos.ipynb) shows how to open Mesogeos directly in google colab 
+[![colab_link](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Orion-AI-Lab/mesogeos/blob/main/notebooks/1_Exploring_Mesogeos.ipynb)
+
 ## Datacube Generation
 
 Find the code to generate a datacube like mesogeos in [datacube_creation](datacube_creation/).

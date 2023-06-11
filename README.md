@@ -4,10 +4,10 @@ This is the official code repository of the mesogeos dataset.
 
 [Pre-print](https://arxiv.org/abs/2306.05144) describing the paper.
 
-The repo contains the following:
-* code to create the mesogeos datacube
-* code that extracts machine learning datasets for different tracks
-* code that trains and evaluates machine learning models for these tracks
+This repo contains code for the following:
+* Creation of the Mesogeos datacube.
+* Extraction of machine learning datasets for different tracks.
+* Training and evaluation machine learning models for these tracks.
 
 **Authors**: *Spyros Kondylatos (1, 2), Ioannis Prapas (1, 2), Gustau Camps-Valls (2), Ioannis Papoutsis (1)*
 

@@ -120,7 +120,9 @@ An example of some variables for a day in the cube:
 **Datacube Citation** 
 
 ```
-Spyros Kondylatos, Ioannis Prapas, Gustau Camps-Valls, & Ioannis Papoutsis. (2023). Mesogeos: A multi-purpose dataset for data-driven wildfire modeling in the Mediterranean. Zenodo. https://doi.org/10.5281/zenodo.7473331
+Spyros Kondylatos, Ioannis Prapas, Gustau Camps-Valls, & Ioannis Papoutsis. (2023). 
+Mesogeos: A multi-purpose dataset for data-driven wildfire modeling in the Mediterranean. 
+Zenodo. https://doi.org/10.5281/zenodo.7473331
 ```
 
 ## Contributing

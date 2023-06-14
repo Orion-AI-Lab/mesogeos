@@ -106,7 +106,7 @@ class TransformerNet(nn.Module):
             dropout=dropout,
         )
         self.transformer_encoder_channel = nn.TransformerEncoder(
-            encoder_layer_time,
+            encoder_layer_channel,
             num_layers=num_layers,
         )
 

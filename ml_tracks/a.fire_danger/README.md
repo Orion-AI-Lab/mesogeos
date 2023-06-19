@@ -1,4 +1,4 @@
-# mesogeos Track B: Wildfire Danger Forecasting
+# mesogeos Track A: Wildfire Danger Forecasting
 
 ## Dataset
 

@@ -28,10 +28,34 @@ This repo contains code for the following:
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
 
-## Accessing the data
+## Data repository
 
-You can access the data using this [Drive link](https://drive.google.com/drive/folders/1aRXQXVvw6hz0eYgtJDoixjPQO-_bRKz9).
+You can access the data using this [Drive link](https://drive.google.com/drive/folders/1aRXQXVvw6hz0eYgtJDoixjPQO-_bRKz9). This link contains the mesogeos datacube (`mesogeos_cube.zarr/`), the extracted datasets for the machine learning tracks (`ml_tracks/`), as well as notebooks showing how to access the mesogeos cubes (`notebooks/`).
 
+### Accessing the mesogeos cube
+
+The mesogeos cube is publicly accessible in the following places:
+
+- OVH S3 storage bucket: https://my-uc3-bucket.s3.gra.io.cloud.ovh.net/mesogeos.zarr
+- Google Drive folder: https://drive.google.com/drive/folders/1aRXQXVvw6hz0eYgtJDoixjPQO-_bRK z9
+
+#### Option 1: Access from S3 (Best option to download)
+
+```
+import zarr
+import xarray as xr
+import fsspec
+
+url = 'https://my-uc3-bucket.s3.gra.io.cloud.ovh.net/mesogeos.zarr'
+ds = xr.open_zarr(fsspec.get_mapper(url))
+ds
+```
+
+To run this make sure to install `xarray`, `zarr` and `fsspec` libraries. 
+
+**Downloading locally:** You can write the zarr using the [xarray `.to_zarr` method](https://docs.xarray.dev/en/latest/generated/xarray.Dataset.to_zarr.html).
+
+#### Option 2: Access from Google Colab
 [notebooks/1_Exploring_Mesogeos.ipynb](notebooks/1_Exploring_Mesogeos.ipynb) shows how to open Mesogeos directly in google colab 
 [![colab_link](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Orion-AI-Lab/mesogeos/blob/main/notebooks/1_Exploring_Mesogeos.ipynb)
 

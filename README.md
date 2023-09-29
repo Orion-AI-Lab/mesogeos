@@ -1,5 +1,7 @@
 # Mesogeos: A multi-purpose dataset for data-driven wildfire modeling in the Mediterranean
 
+🆕 2023-09: Accepted at [Neurips 2023 Datasets and Benchmarks Track](https://openreview.net/group?id=NeurIPS.cc/2023/Track/Datasets_and_Benchmarks)
+
 This is the official code repository of the mesogeos dataset. 
 
 [Pre-print](https://arxiv.org/abs/2306.05144) describing the paper.

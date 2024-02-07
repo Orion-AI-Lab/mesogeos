@@ -178,13 +178,13 @@ Creative Commons Attribution v4
 ### Citation
 
 ```
-@misc{kondylatos2023mesogeos,
-      title={Mesogeos: A multi-purpose dataset for data-driven wildfire modeling in the Mediterranean}, 
-      author={Spyros Kondylatos and Ioannis Prapas and Gustau Camps-Valls and Ioannis Papoutsis},
-      year={2023},
-      eprint={2306.05144},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+@inproceedings{
+kondylatos2023mesogeos,
+title={Mesogeos: A multi-purpose dataset for data-driven wildfire modeling in the Mediterranean},
+author={Spyros Kondylatos and Ioannis Prapas and Gustau Camps-Valls and Ioannis Papoutsis},
+booktitle={Thirty-seventh Conference on Neural Information Processing Systems Datasets and Benchmarks Track},
+year={2023},
+url={https://openreview.net/forum?id=VH1vxapUTs}
 }
 ```
 

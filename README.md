@@ -38,7 +38,6 @@ You can access the data using this [Drive link](https://drive.google.com/drive/f
 
 The mesogeos cube is publicly accessible in the following places:
 
-- OVH S3 storage bucket: [https://my-uc3-bucket.s3.gra.io.cloud.ovh.net/mesogeos.zarr](https://my-uc3-bucket.s3.gra.io.cloud.ovh.net/mesogeos.zarr)
 - Google Drive folder: [https://drive.google.com/drive/folders/1aRXQXVvw6hz0eYgtJDoixjPQO-_bRK z9
 ](https://drive.google.com/drive/folders/1aRXQXVvw6hz0eYgtJDoixjPQO-_bRKz9)
 

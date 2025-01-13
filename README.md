@@ -41,25 +41,15 @@ The mesogeos cube is publicly accessible in the following places:
 - Google Drive folder: [https://drive.google.com/drive/folders/1aRXQXVvw6hz0eYgtJDoixjPQO-_bRK z9
 ](https://drive.google.com/drive/folders/1aRXQXVvw6hz0eYgtJDoixjPQO-_bRKz9)
 
-#### Option 1: Access from S3 (Best option to download)
+- ~~ S3 Storage in OVH ~~ (This option isn't supported anymore due to supporting project termination)
 
-```
-import zarr
-import xarray as xr
-import fsspec
-
-url = 'https://my-uc3-bucket.s3.gra.io.cloud.ovh.net/mesogeos.zarr'
-ds = xr.open_zarr(fsspec.get_mapper(url))
-ds
-```
-
-To run this make sure to install `xarray`, `zarr` and `fsspec` libraries. 
-
-**Downloading locally:** You can write the zarr using the [xarray `.to_zarr` method](https://docs.xarray.dev/en/latest/generated/xarray.Dataset.to_zarr.html).
-
-#### Option 2: Access from Google Colab
+#### Option 1: Access from Google Colab
 [notebooks/1_Exploring_Mesogeos.ipynb](notebooks/1_Exploring_Mesogeos.ipynb) shows how to open Mesogeos directly in google colab 
 [![colab_link](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Orion-AI-Lab/mesogeos/blob/main/notebooks/1_Exploring_Mesogeos.ipynb)
+
+#### Option 2: Download from Google Colab
+
+[Rclone](https://rclone.org/) may be the best option to download the dataset from google drive. See [this issue](https://github.com/Orion-AI-Lab/mesogeos/issues/4). 
 
 ## Datacube Generation
 

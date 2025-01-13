@@ -9,7 +9,7 @@ This is the official code repository of the mesogeos dataset.
 This repo contains code for the following:
 * Creation of the Mesogeos datacube.
 * Extraction of machine learning datasets for different tracks.
-* Training and evaluation machine learning models for these tracks.
+* Training and evaluation of machine learning models for these tracks.
 
 **Authors**: *Spyros Kondylatos (1, 2), Ioannis Prapas (1, 2), Gustau Camps-Valls (2), Ioannis Papoutsis (1)*
 
@@ -41,7 +41,7 @@ The mesogeos cube is publicly accessible in the following places:
 - Google Drive folder: [https://drive.google.com/drive/folders/1aRXQXVvw6hz0eYgtJDoixjPQO-_bRK z9
 ](https://drive.google.com/drive/folders/1aRXQXVvw6hz0eYgtJDoixjPQO-_bRKz9)
 
-- ~~ S3 Storage in OVH ~~ (This option isn't supported anymore due to supporting project termination)
+- ~~S3 Storage in OVH~~ (This option isn't supported anymore due to supporting project termination)
 
 #### Option 1: Access from Google Colab
 [notebooks/1_Exploring_Mesogeos.ipynb](notebooks/1_Exploring_Mesogeos.ipynb) shows how to open Mesogeos directly in google colab 
